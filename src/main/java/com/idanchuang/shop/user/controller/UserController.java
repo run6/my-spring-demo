@@ -1,37 +1,41 @@
 package com.idanchuang.shop.user.controller;
 
-import com.idanchuang.shop.user.ReturnResult;
-import com.idanchuang.shop.user.dao.UserMapper;
 import com.idanchuang.shop.user.models.User;
-import org.apache.catalina.connector.Response;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.idanchuang.shop.user.service.UserService;
+import com.idanchuang.shop.user.utils.ReturnResult;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 public class UserController {
 
     private final
-    UserMapper userMapper;
+    UserService userService;
 
-    public UserController(UserMapper userMapper) {
-        this.userMapper = userMapper;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-    @GetMapping("/user/{id}")
-    public User getById(@PathVariable("id") Integer id){
-        return userMapper.selectByPrimaryKey(id);
+    @RequestMapping("/getAllUser")
+    public List<User> getAllUser() {
+        return userService.getAllUser();
     }
 
     @PostMapping("/user")
-    public HashMap insertUser(User user){
-        var res = new HashMap<>();
-        res.put("id", userMapper.insert(user));
-
-        return ReturnResult.creat(Response.SC_OK,"操作成功",res);
+    public User insert(User user) {
+        return userService.insert(user);
     }
+
+    @PutMapping("/user/{id}")
+    public HashMap update(@PathVariable("id") Long id, User user) {
+        try {
+            userService.update(id, user);
+            return ReturnResult.success();
+        } catch (Exception e) {
+            return ReturnResult.error();
+        }
+    }
+
 }
