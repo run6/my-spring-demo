@@ -11,6 +11,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+
 /**
  * <p>
  * 
@@ -28,12 +31,16 @@ public class Users {
     @TableId(type = IdType.AUTO)
     private Integer id;
 
+    @NotEmpty(message = "姓名不能为空")
     private String name;
 
+    @NotEmpty(message = "邮箱不能为空")
+    @Email(message = "邮箱格式错误")
     private String email;
 
     private Date emailVerifiedAt;
 
+    @NotEmpty(message = "密码不能为空")
     private String password;
 
     private String rememberToken;

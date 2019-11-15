@@ -3,73 +3,56 @@ package com.idanchuang.shop.user.utils;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 @Data
 public class ReturnResult<T> implements Serializable {
 
-    private static final int SYSTEM_ERROR = 5001;
-    private static final int SUCCESS = 0;
-
-    // 提示msg
     private String message = "操作成功";
-    //业务代码
-    private Integer code = 0;
-    // 返回数据对象
-    private T result;
+    private long code = 0;
+    private T data;
     // 时间戳
     private long timestamp = System.currentTimeMillis();
 
     private static final HashMap<Integer, String> resultMsg = new HashMap<>();
 
-    static {
-        resultMsg.put(SYSTEM_ERROR, "系统异常,请重试");
-        resultMsg.put(SUCCESS, "操作成功");
+
+    private ReturnResult(long code, String message, T data) {
+        this.code = code;
+        this.message = message;
+        this.data = data;
     }
 
-    private static String getResultMsgByCode(Integer code) {
-        var msg = resultMsg.get(code);
-        if (!msg.isEmpty()) {
-            return msg;
-        } else {
-            return "服务器与地球失去联系了~~~~";
-        }
+    private ReturnResult(){}
+
+
+    /**
+     * 成功返回结果
+     *
+     * @param data 获取的数据
+     */
+    public static <T> ReturnResult<T> success(T data) {
+        return new ReturnResult<>(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), data);
     }
 
-
-    public ReturnResult<T> success(String message) {
-        return this;
-    }
-
-
-    public static ReturnResult<Object> ok(String msg) {
-        ReturnResult<Object> r = new ReturnResult<>();
-        r.setMessage(msg);
-        return r;
-    }
-
-    public static ReturnResult<Object> ok(Object data) {
-        ReturnResult<Object> r = new ReturnResult<>();
-        r.setResult(data);
-        return r;
-    }
-
-    public static ReturnResult<Object> error(int code, String msg) {
+    public static ReturnResult<Object> error(long code, String msg) {
         ReturnResult<Object> r = new ReturnResult<>();
         r.setCode(code);
         r.setMessage(msg);
         return r;
     }
 
-    public static ReturnResult<Object> error(int code) {
+    public static ReturnResult<Object> error(long code) {
         ReturnResult<Object> r = new ReturnResult<>();
         r.setCode(code);
-        r.setMessage(getResultMsgByCode(code));
+        r.setMessage("(⊙o⊙)服务器好像出了点问题,请重试一下吧~");
         return r;
     }
 
 
     public static ReturnResult<Object> error(String msg) {
-        return error(SYSTEM_ERROR, msg);
+        return error(ResultCode.FAILED.getCode(), msg);
     }
 }
