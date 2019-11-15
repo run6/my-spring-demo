@@ -1,6 +1,7 @@
 package com.idanchuang.shop.user.sys.entity;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -31,17 +32,17 @@ public class Users {
 
     private String email;
 
-    private LocalDateTime emailVerifiedAt;
+    private Date emailVerifiedAt;
 
     private String password;
 
     private String rememberToken;
 
     @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createdAt;
+    private Date createdAt;
 
     @TableField(fill = FieldFill.UPDATE)
-    private LocalDateTime updatedAt;
+    private Date updatedAt;
 
 
 }

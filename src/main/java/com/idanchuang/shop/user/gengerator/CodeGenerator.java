@@ -48,11 +48,11 @@ public class CodeGenerator {
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("jdbc:mysql://47.106.204.16:3306/laravel-shop?useUnicode=true&useSSL=false&characterEncoding=utf8");
+        dsc.setUrl("${spring.datasource.url}");
         // dsc.setSchemaName("public");
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
         dsc.setUsername("root");
-        dsc.setPassword("mr666...");
+        dsc.setPassword("${spring.datasource.password}");
         mpg.setDataSource(dsc);
 
         // 包配置

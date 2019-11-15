@@ -26,10 +26,10 @@ public class UsersController {
     }
 
     @GetMapping("/{id}")
-    public Users getUserById(@PathVariable("id") Integer id){
+    public ReturnResult getUserById(@PathVariable("id") Integer id){
 
         var user =  usersService.getById(id);
-        return  user;
+        return ReturnResult.ok(user);
     }
 
     @PostMapping

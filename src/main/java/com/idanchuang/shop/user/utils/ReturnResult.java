@@ -1,71 +1,75 @@
 package com.idanchuang.shop.user.utils;
 
-import org.apache.catalina.connector.Response;
+import lombok.Data;
+
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class ReturnResult {
+@Data
+public class ReturnResult<T> implements Serializable {
 
     private static final int SYSTEM_ERROR = 5001;
     private static final int SUCCESS = 0;
 
+    // 提示msg
+    private String message = "操作成功";
+    //业务代码
+    private Integer code = 0;
+    // 返回数据对象
+    private T result;
+    // 时间戳
+    private long timestamp = System.currentTimeMillis();
 
+    private static final HashMap<Integer, String> resultMsg = new HashMap<>();
 
-    private static final HashMap<Integer,String> resultMsg = new HashMap<>();
     static {
-        resultMsg.put(SYSTEM_ERROR,"系统异常,请重试");
-        resultMsg.put(SUCCESS,"操作成功");
+        resultMsg.put(SYSTEM_ERROR, "系统异常,请重试");
+        resultMsg.put(SUCCESS, "操作成功");
     }
 
-    private static String getResultMsgByCode(Integer code){
+    private static String getResultMsgByCode(Integer code) {
         var msg = resultMsg.get(code);
         if (!msg.isEmpty()) {
             return msg;
-        }else {
-            return  "服务器与地球失去联系了~~~~";
+        } else {
+            return "服务器与地球失去联系了~~~~";
         }
     }
 
-    private static HashMap creat(Integer code,String msg,HashMap data){
-        var result = new HashMap<>();
 
-        result.put("code",code);
-        result.put("msg",msg);
-        result.put("data",data);
-        return result;
-    }
-
-    private static HashMap creat(Integer code, String msg) {
-        var result = new HashMap<>();
-
-        result.put("code",code);
-        result.put("msg",msg);
-        return result;
+    public ReturnResult<T> success(String message) {
+        return this;
     }
 
 
-    public static HashMap success(){
-        String msg = getResultMsgByCode(SUCCESS);
-        return creat(SUCCESS,msg,new HashMap());
+    public static ReturnResult<Object> ok(String msg) {
+        ReturnResult<Object> r = new ReturnResult<>();
+        r.setMessage(msg);
+        return r;
     }
 
-    public static HashMap success(HashMap data){
-        String msg = getResultMsgByCode(SUCCESS);
-        return creat(SUCCESS,msg,data);
+    public static ReturnResult<Object> ok(Object data) {
+        ReturnResult<Object> r = new ReturnResult<>();
+        r.setResult(data);
+        return r;
     }
 
-    public static HashMap error(){
-        String msg = getResultMsgByCode(SYSTEM_ERROR);
-        return creat(SYSTEM_ERROR,msg);
+    public static ReturnResult<Object> error(int code, String msg) {
+        ReturnResult<Object> r = new ReturnResult<>();
+        r.setCode(code);
+        r.setMessage(msg);
+        return r;
     }
 
-    public static HashMap error(Integer code) {
-        String msg = getResultMsgByCode(code);
-        return creat(code,msg);
+    public static ReturnResult<Object> error(int code) {
+        ReturnResult<Object> r = new ReturnResult<>();
+        r.setCode(code);
+        r.setMessage(getResultMsgByCode(code));
+        return r;
     }
 
 
-    public static HashMap error(Integer code,String msg){
-        return creat(code,msg);
+    public static ReturnResult<Object> error(String msg) {
+        return error(SYSTEM_ERROR, msg);
     }
-
 }
