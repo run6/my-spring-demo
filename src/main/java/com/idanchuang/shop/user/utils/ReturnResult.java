@@ -3,9 +3,6 @@ package com.idanchuang.shop.user.utils;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 @Data
 public class ReturnResult<T> implements Serializable {
@@ -13,11 +10,7 @@ public class ReturnResult<T> implements Serializable {
     private String message = "操作成功";
     private long code = 0;
     private T data;
-    // 时间戳
     private long timestamp = System.currentTimeMillis();
-
-    private static final HashMap<Integer, String> resultMsg = new HashMap<>();
-
 
     private ReturnResult(long code, String message, T data) {
         this.code = code;
@@ -27,6 +20,9 @@ public class ReturnResult<T> implements Serializable {
 
     private ReturnResult(){}
 
+    public static ReturnResult success() {
+        return new ReturnResult();
+    }
 
     /**
      * 成功返回结果

@@ -3,8 +3,8 @@ package com.idanchuang.shop.user.sys.controller;
 
 import com.idanchuang.shop.user.sys.entity.Users;
 import com.idanchuang.shop.user.sys.service.IUsersService;
-import com.idanchuang.shop.user.utils.ResultCode;
 import com.idanchuang.shop.user.utils.ReturnResult;
+import com.idanchuang.shop.user.utils.Token;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,16 +27,11 @@ public class UsersController {
     }
 
     /**
-     * 获取某个用户信息
-     * @param id 用户id
+     * 获取当前用户信息
      */
-    @GetMapping("/{id}")
-    public ReturnResult getUserById(@PathVariable("id") Integer id){
-        var user =  usersService.getById(id);
-        if (user == null){
-            return ReturnResult.error(ResultCode.NOT_FOUND.getCode(),ResultCode.NOT_FOUND.getMessage());
-        }
-        return ReturnResult.success(user);
+    @GetMapping
+    public ReturnResult getUserById() {
+        return ReturnResult.success(Token.user);
     }
 
     /**
@@ -44,12 +39,9 @@ public class UsersController {
      * @param users 用户信息
      */
     @PostMapping
-    public Integer  insert(@RequestBody @Validated Users users) {
+    public ReturnResult insert(@RequestBody @Validated Users users) {
         usersService.save(users);
-        System.out.println(users);
-        return users.getId();
+        return ReturnResult.success();
     }
-
-
 
 }

@@ -8,7 +8,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.validation.ConstraintViolationException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @ControllerAdvice
@@ -28,10 +31,30 @@ public class ExceptionHandle {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ReturnResult MethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        List<ObjectError> errors =e.getBindingResult().getAllErrors();
+        List<ObjectError> errors = e.getBindingResult().getAllErrors();
         StringBuffer errorMsg = new StringBuffer();
         errors.forEach(x -> errorMsg.append(x.getDefaultMessage()).append(";"));
         return ReturnResult.error(errorMsg.toString());
+    }
+
+    /**
+     * 验证器未校验通过
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ReturnResult ConstraintViolationException(ConstraintViolationException e) {
+
+        var s = e.getConstraintViolations();
+        var msg = (String) s.stream().map((cv) -> cv == null ? "null" : cv.getMessage()).collect(Collectors.joining(", "));
+
+        return ReturnResult.error(msg);
+    }
+
+    /**
+     * 自定义异常,返回
+     */
+    @ExceptionHandler(ResultException.class)
+    public ReturnResult ResultException(ResultException e) {
+        return ReturnResult.error(e.getMessage());
     }
 }
 
