@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -43,8 +45,8 @@ public class ExceptionHandle {
     @ExceptionHandler(ConstraintViolationException.class)
     public ReturnResult ConstraintViolationException(ConstraintViolationException e) {
 
-        var s = e.getConstraintViolations();
-        var msg = (String) s.stream().map((cv) -> cv == null ? "null" : cv.getMessage()).collect(Collectors.joining(", "));
+        Set<ConstraintViolation<?>> s = e.getConstraintViolations();
+        String msg = (String) s.stream().map((cv) -> cv == null ? "null" : cv.getMessage()).collect(Collectors.joining(", "));
 
         return ReturnResult.error(msg);
     }

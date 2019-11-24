@@ -1,8 +1,10 @@
 package com.idanchuang.shop.user.interceptor;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.Claim;
 import com.idanchuang.shop.user.annotation.PassToken;
 import com.idanchuang.shop.user.exception.ResultException;
+import com.idanchuang.shop.user.sys.entity.Users;
 import com.idanchuang.shop.user.sys.service.IUsersService;
 import com.idanchuang.shop.user.utils.Token;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 public class TokenInterceptor implements HandlerInterceptor {
 
@@ -27,7 +30,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
-        var handleMethod = (HandlerMethod) handler;
+        HandlerMethod handleMethod = (HandlerMethod) handler;
         Method method = handleMethod.getMethod();
 
         //检查是否有passToken注解，有则跳过认证
@@ -42,9 +45,9 @@ public class TokenInterceptor implements HandlerInterceptor {
         }
 
         try {
-            var claims = Token.verify(token).getClaims();
-            var userId = claims.get("userId").asInt();
-            var user = usersService.getById(userId);
+            Map<String, Claim> claims = Token.verify(token).getClaims();
+            Integer userId = claims.get("userId").asInt();
+            Users user = usersService.getById(userId);
             if (user == null) {
                 throw new ResultException("用户不存在");
             }

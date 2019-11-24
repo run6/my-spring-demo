@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.idanchuang.shop.user.sys.entity.Users;
+import org.springframework.beans.factory.annotation.Value;
 
 public class Token {
 
